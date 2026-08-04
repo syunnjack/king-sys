@@ -30,7 +30,7 @@ export default function RootLayout({
     <html
       lang="ja"
       className={`${geistSans.variable} ${geistMono.variable} h-full antialiased`}
-    >
+    ><head><script async src="https://www.googletagmanager.com/gtag/js?id=G-6Z0RDCK8R3"></script><script dangerouslySetInnerHTML={{__html: `window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments);}gtag('js',new Date());gtag('config','G-6Z0RDCK8R3');`}} /></head>
       <body className="min-h-full flex flex-col">
         <header className="border-b border-slate-200 bg-white">
           <div className="mx-auto flex max-w-4xl items-center justify-between px-4 py-3">
