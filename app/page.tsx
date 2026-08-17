@@ -1,14 +1,45 @@
 import Link from "next/link";
 import { listShops } from "@/lib/data";
-import { SITE_DESCRIPTION, SITE_NAME } from "@/lib/site";
+import { SITE_DESCRIPTION, SITE_NAME, resolveBaseUrl } from "@/lib/site";
 
 export const revalidate = 60;
 
 export default async function Home() {
   const shops = await listShops();
+  const baseUrl = resolveBaseUrl();
+
+  // 検索エンジンとAIにサイトの素性を渡す。JSON.stringifyはXSSを除去しないため、
+  // Next.jsの推奨どおり "<" をユニコード表記に置き換えてから埋め込む。
+  const jsonLd = {
+    "@context": "https://schema.org",
+    "@graph": [
+      {
+        "@type": "WebSite",
+        "@id": `${baseUrl}/#website`,
+        url: baseUrl,
+        name: SITE_NAME,
+        description: SITE_DESCRIPTION,
+        inLanguage: "ja",
+        publisher: { "@id": `${baseUrl}/#organization` },
+      },
+      {
+        "@type": "Organization",
+        "@id": `${baseUrl}/#organization`,
+        name: SITE_NAME,
+        url: baseUrl,
+        description: SITE_DESCRIPTION,
+      },
+    ],
+  };
 
   return (
     <div className="mx-auto max-w-3xl px-4 py-16">
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{
+          __html: JSON.stringify(jsonLd).replace(/</g, "\\u003c"),
+        }}
+      />
       <h1 className="text-3xl font-bold text-slate-900">{SITE_NAME}</h1>
       <p className="mt-3 text-lg text-slate-600">{SITE_DESCRIPTION}</p>
 
